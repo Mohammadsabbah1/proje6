@@ -1,1 +1,69 @@
-<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><title>Test</title><script defer="defer" src="bundle.js"></script><link href="main.css" rel="stylesheet"></head><body><header><div class="">Logo</div><div class="">navigation</div></header><main><section><form id="urlForm"><input id="name" name="url" placeholder="Enter URL" required> <button id="submitButton" type="submit">Submit</button></form></section><section><strong>Form Results:</strong><div id="results"></div></section></main><footer><p>This is a footer</p></footer></body></html>
+<!doctype html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <link href="../src/client/styles/base.css" rel="stylesheet">
+    <link href="../src/client/styles/footer.css" rel="stylesheet">
+    <link href="../src/client/styles/form.css" rel="stylesheet">
+    <link href="../src/client/styles/header.css" rel="stylesheet">
+    <link href="../src/client/styles/resets.css" rel="stylesheet">
+    <script defer="defer" src="bundle.js"></script>
+    <link href="main.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="">Logo</div>
+        <div class="">navigation</div>
+    </header>
+    <main>
+        <section>
+            <form id="urlForm"><input id="name" name="url" placeholder="Enter URL" required> <button id="submitButton"
+                    type="submit">Submit</button></form>
+        </section>
+        <section><strong>Form Results:</strong>
+            <div id="results"></div>
+        </section>
+    </main>
+    <footer>
+        <p>This is a footer</p>
+    </footer>
+    <script>document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('urlForm').addEventListener('submit', async function (event) {
+                event.preventDefault(); // Prevent the default form submission behavior
+
+                const inputField = document.getElementById('name').value;
+                const resultsArea = document.getElementById('results');
+
+                try {
+                    const response = await fetch('/analyze', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ url: inputField }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+                    const summary = data.summary.map(item =>
+                        `<div>
+                    <h3>${item.title}</h3>
+                    <p>${item.summary}</p>
+                </div>`
+                    ).join('');
+                    resultsArea.innerHTML = summary; // Display the summary in the results area
+                } catch (error) {
+                    console.error('Error:', error);
+                    resultsArea.innerHTML = 'An error occurred while fetching the data.';
+                }
+            });
+        });</script>
+</body>
+
+</html>

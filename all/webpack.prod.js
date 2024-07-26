@@ -1,12 +1,9 @@
-const path = require("path");
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const WorkboxPlugin = require('workbox-webpack-plugin');
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-
+const path = require('path');
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: './src/client/index.js',
@@ -26,30 +23,29 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        use: [
+          MiniCssExtractPlugin.loader, // Extracts CSS into separate files
+          'css-loader', // Interprets CSS
+          'sass-loader' // Compiles Sass to CSS
+        ],
       },
     ],
   },
   optimization: {
     minimize: true,
     minimizer: [
-      new TerserPlugin(),
       new CssMinimizerPlugin(),
-      new OptimizeCSSAssetsPlugin(),
+      new TerserPlugin(),
     ],
   },
   plugins: [
-    new WorkboxPlugin.GenerateSW({
-        clientsClaim: true,
-        skipWaiting: true,
-      }),
     new HtmlWebPackPlugin({
-      template: "./src/client/views/index.html",
-      filename: "./index.html",
+      template: './src/client/views/index.html',
+      filename: 'index.html',
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: "[name].css",
+      filename: '[name].css',
     }),
   ],
 };
